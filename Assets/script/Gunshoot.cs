@@ -18,7 +18,9 @@ public class Gunshoot : MonoBehaviour
     public AudioClip ReloadSound;
     
     
-    
+
+
+
     private void Start()
     {
         ReloadTime=MaxTime;
@@ -33,10 +35,9 @@ public class Gunshoot : MonoBehaviour
         if(Input.GetMouseButton(0)&&ammo>0 && Time.time>nextshoot&&!Reload)
         {
             shoot = true;
+
            
-            nextshoot =Time.time+shootTime;
-            ammo--;
-            
+
         }
         
 
@@ -46,7 +47,8 @@ public class Gunshoot : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R)||ammo==0)
         {
             Reload=true;
-           
+          
+
         }
         if(Reload){
             Num=Magsammo-ammo;
