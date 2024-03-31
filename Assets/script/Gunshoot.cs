@@ -16,11 +16,10 @@ public class Gunshoot : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip ShootingSound;
     public AudioClip ReloadSound;
+    public float Damage=10;
+    public Ray ray;
     
     
-
-
-
     private void Start()
     {
         ReloadTime=MaxTime;
@@ -35,9 +34,10 @@ public class Gunshoot : MonoBehaviour
         if(Input.GetMouseButton(0)&&ammo>0 && Time.time>nextshoot&&!Reload)
         {
             shoot = true;
-
            
-
+            nextshoot =Time.time+shootTime;
+            ammo--;
+            
         }
         
 
@@ -47,8 +47,7 @@ public class Gunshoot : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R)||ammo==0)
         {
             Reload=true;
-          
-
+           
         }
         if(Reload){
             Num=Magsammo-ammo;
@@ -87,7 +86,11 @@ public class Gunshoot : MonoBehaviour
                 {
                     Debug.Log("SHOOT");
                 }
-               
+                var HitBox = hit.collider.GetComponent<Hitbox>();
+                if (HitBox)
+                {
+                    HitBox.OnRaycastHit(this,ray.direction);
+                }
             }
         }
     }
