@@ -11,13 +11,13 @@ public class snipeshoot : MonoBehaviour
     public TextMeshProUGUI AmmoText, totalAmmoText;
     public proceduralrecoil recoil;
 
-    public bool Zoom;
+    public bool isZooming;
     public AudioSource audioSource;
     public AudioClip ShootingSound;
     public AudioClip ReloadSound;
     public Animator anim;
 
-
+    bool isReloading;
 
     private void Start()
     {
@@ -31,7 +31,7 @@ public class snipeshoot : MonoBehaviour
         AmmoText.text = "" + ammo;
         totalAmmoText.text = "" + totalammo;
 
-        if (Input.GetMouseButton(0) && ammo > 0 && Time.time > nextshoot && !Reload)
+        if (Input.GetMouseButton(0) && ammo > 0 && Time.time > nextshoot && !isReloading)
         {
             shoot = true;
 
@@ -40,47 +40,65 @@ public class snipeshoot : MonoBehaviour
 
         }
         if (Input.GetMouseButton(1))
-            {
+        {
+            isZooming = true;
             anim.SetBool("Zoom", true);
-            
-
         }
         else
         {
-           
-            anim.SetBool("Zoom", false);
+            isZooming = false;
+            anim.SetBool("Zoom",false);
         }
 
-
-
-        if (Input.GetKeyDown(KeyCode.R) || ammo == 0)
+        if ((Input.GetKeyDown(KeyCode.R) || ammo == 0) && !isReloading && !isZooming)
         {
             Reload = true;
+            StartCoroutine(ReloadGun());
 
         }
-        if (Reload)
+        // if (Reload)
+        // {
+        //     Num = Magsammo - ammo;
+        //     ReloadTime -= Time.deltaTime;
+
+        //     if (ReloadTime < 0)
+        //     {
+        //         Reload = false;
+        //         ReloadTime = MaxTime;
+        //         if (Num > totalammo)
+        //         {
+        //             ammo += totalammo;
+        //             totalammo = 0;
+        //         }
+        //         if (Num < totalammo)
+        //         {
+        //             ammo += Num;
+        //             totalammo -= Num;
+        //         }
+        //         audioSource.PlayOneShot(ReloadSound);
+
+        //     }
+        // }
+    }
+
+    IEnumerator ReloadGun()
+    {
+        isReloading = true;
+        audioSource.PlayOneShot(ReloadSound);
+        anim.SetTrigger("reload");
+
+        yield return new WaitForSeconds(1f);
+        if (Num > totalammo)
         {
-            Num = Magsammo - ammo;
-            ReloadTime -= Time.deltaTime;
-
-            if (ReloadTime < 0)
-            {
-                Reload = false;
-                ReloadTime = MaxTime;
-                if (Num > totalammo)
-                {
-                    ammo += totalammo;
-                    totalammo = 0;
-                }
-                if (Num < totalammo)
-                {
-                    ammo += Num;
-                    totalammo -= Num;
-                }
-                audioSource.PlayOneShot(ReloadSound);
-
-            }
+            ammo += totalammo;
+            totalammo = 0;
         }
+        if (Num < totalammo)
+        {
+            ammo += Num;
+            totalammo -= Num;
+        }
+        isReloading = false;
     }
     private void FixedUpdate()
     {

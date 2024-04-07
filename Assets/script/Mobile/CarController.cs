@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
+using Unity.VisualScripting;
 
 public class CarController : MonoBehaviour
 {
+    [SerializeField] Transform carCamera;
     private Rigidbody PlayerRB;
     public WheelColliders colliders;
     public WheelMeshes wheelMeshes;
@@ -34,7 +37,16 @@ public class CarController : MonoBehaviour
     private float clutch;
     private float wheelRPM;
     public AnimationCurve hpToRPMCurve;
-    // Start is called before the first frame update
+
+    void OnEnable()
+    {
+        carCamera.gameObject.SetActive(true);
+    }
+
+    void OnDisable()
+    {
+        carCamera.gameObject.SetActive(false);
+    }
     void Start()
     {
       PlayerRB = GetComponent<Rigidbody>();
@@ -53,6 +65,11 @@ public class CarController : MonoBehaviour
         ApplyWheelPosition(); 
         ApplySteering();   
         ApplyBrake();
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            MovementHandler.EnableCarMovement?.Invoke(false);
+        }
     }
 
 
