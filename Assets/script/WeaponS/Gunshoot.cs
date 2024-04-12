@@ -6,7 +6,7 @@ using TMPro;
 
 public class Gunshoot : MonoBehaviour
 {
-    public float ammo, totalammo, range, nextshoot, shootTime, Magsammo, Num, ReloadTime, MaxTime;
+    public float ammo, totalammo, range, nextshoot, shootTime, Magsammo, Num, ReloadTime, MaxTime,attackDamage;
     public bool shoot, Reload;
     RaycastHit hit;
     public TextMeshProUGUI AmmoText, totalAmmoText;
@@ -104,15 +104,10 @@ public class Gunshoot : MonoBehaviour
 
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, range))
             {
-                if (hit.transform.tag == "Enemy")
+                TigerHealth tigerHealth = hit.collider.GetComponent<TigerHealth>();
+                if (tigerHealth != null)
                 {
-                    Debug.Log("SHOOT");
-
-                }
-                var HitBox = hit.collider.GetComponent<Hitbox>();
-                if (HitBox)
-                {
-                    HitBox.OnRaycastHit(this, ray.direction);
+                    tigerHealth.TakeDamage(attackDamage);
                 }
             }
         }

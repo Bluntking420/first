@@ -33,6 +33,21 @@ public class TigerController : MonoBehaviour
 
     private void Update()
     {
+        if (waypoints.Length == 0)
+            return;
+
+        Vector3 targetPosition = waypoints[currentWaypointIndex].position;
+        float distance = Vector3.Distance(transform.position, targetPosition);
+
+        // Move towards the current waypoint
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+
+        // If reached the current waypoint, move to the next one
+        if (distance <= stoppingDistance)
+        {
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+        }
+
         switch (currentState)
         {
             case State.Idle:
