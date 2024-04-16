@@ -72,5 +72,6 @@ public class EnemyAI : MonoBehaviour
     {
         // Implement attack logic here
         animator.SetTrigger("attack");
+       
     }
 }

@@ -1,38 +1,80 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
-   public float maxHealth;
-        public float currentHealth;
-    public ragdoll Ragdoll;
-   
-    void Start()
+    public float maxHealth;
+    public float currentHealth;
+    private Image RedSplatterImage = null;
+    
+    
+    private AudioClip HurtAudio=null;
+    private AudioSource HealthAudioSource;
+    public int RegenRate =1;
+    private bool CanRegen=false;
+    private float HealCooldown=3.0f;
+    private float MaxHealCooldown = 3.0f;
+    private bool StartCooldown=false;
+
+
+    private void Start()
     {
-        Ragdoll = GetComponent<ragdoll>();  
-        currentHealth = maxHealth;
-        var Rigidbodies=GetComponentsInChildren<Rigidbody>();
-        foreach (var rigidbody in Rigidbodies)
+        HealthAudioSource = GetComponent<AudioSource>();
+    }
+
+
+    void UpdateHealth()
+    { 
+    
+     Color splatterAlpha=RedSplatterImage.color;
+        splatterAlpha.a = 1 - (currentHealth / maxHealth);
+        RedSplatterImage.color = splatterAlpha;
+    }
+    public void TakeDamage()
+    {
+        if (currentHealth >= 0)
         {
-            Hitbox hitbox =rigidbody.gameObject.AddComponent<Hitbox>();
-            hitbox.health = this;
+           CanRegen = false;
+            UpdateHealth();
+            HealCooldown = MaxHealCooldown;
+            StartCooldown = true;
+        
+        }
+    
+    }
+    private void Update()
+    {
+        if (StartCooldown)
+        {
+            HealCooldown -= Time.deltaTime;
+            if (HealCooldown <= 0)
+            {
+                CanRegen = true;
+                StartCooldown = false;
+            } 
+        }
+        if (CanRegen)
+        {
+            if (currentHealth <= maxHealth - 0.01f)
+            {
+                currentHealth += Time.deltaTime * RegenRate;
+                UpdateHealth();
+            }
+            else
+            {
+                currentHealth = maxHealth;
+                HealCooldown = MaxHealCooldown;
+                CanRegen=false;
+            }
         }
     }
 
-    public void TakeDamage(float amount, Vector3 direction)
-    { 
-      currentHealth -= amount;
-        if (currentHealth <= 0.0f)
-        {
-            Die();
-        }
-    }
-    private void Die()
-    { 
-     Ragdoll.ActivateRagdoll();
-    }
+
+
+
+
+
+
 
 }
-
-
