@@ -16,11 +16,11 @@ public class Gunshoot : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip ShootingSound;
     public AudioClip ReloadSound;
-    public float Damage = 10;
+  
     public Ray ray;
     private Animator isreloading;
     bool isReloading;
-    public int TakeDamage;
+    public int Damage;
     private void Start()
     {
         isreloading = GetComponent<Animator>();
@@ -108,15 +108,11 @@ public class Gunshoot : MonoBehaviour
                 if (hit.transform.tag == "Enemy")
                 { 
                   CharacterStats EnemyStats=hit.transform.GetComponent<CharacterStats>();
-                    EnemyStats.TakeDamage();
+                    EnemyStats.TakeDamage(Damage);
                 }
                 
                 
-                TigerHealth tigerHealth = hit.collider.GetComponent<TigerHealth>();
-                if (tigerHealth != null)
-                {
-                    tigerHealth.TakeDamage(attackDamage);
-                }
+               
             }
         }
     }
