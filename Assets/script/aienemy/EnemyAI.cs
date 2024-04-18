@@ -3,37 +3,87 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyFollowPlayer : MonoBehaviour
+public class EnemyFollowPlayer : CharacterStats
 {
-    public Transform player;            // Reference to the player
-    public float followDistance = 10f;  // Distance at which the enemy starts following
+   private NavMeshAgent agent=null;
+ [SerializeField]    private Transform PlayerBody;
+    private Animator anim=null;
+    private EnemyStats stats=null;
+    private float timeofLastAttack=0;
+    private bool hasStopped=false;
 
-    private NavMeshAgent agent;
 
-    void Start()
+    private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
+        GetReferences();
     }
 
-    void Update()
+    private void Update()
     {
-        if (player == null)
-            return;
+        MoveToTarget();
+    }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Check if the player is within follow distance
-        if (distanceToPlayer <= followDistance)
+
+    private void MoveToTarget()
+    {
+        agent.SetDestination(PlayerBody.position);
+        anim.SetFloat("Speed", 1f, 0.3f,Time.deltaTime);
+        RotateToPlayerBody();
+        float distanceToPlayerBody = Vector3.Distance(PlayerBody.position, transform.position);
+            if(distanceToPlayerBody <= agent.stoppingDistance)
+             {
+            anim.SetFloat("Speed", 0);
+            //Attack
+            if (!hasStopped)
+            {
+                hasStopped = true;
+                timeofLastAttack = Time.time;
+            }
+            
+           
+            if (Time.time >= timeofLastAttack + stats.AttackSpeed)
+            { 
+              timeofLastAttack=Time.time;
+                CharacterStats PlayerBodyStats = PlayerBody.GetComponent<CharacterStats>();
+                AttackPlayerBody(PlayerBodyStats);
+            }
+          
+              }
+        
+        
+        
+        
+        if (agent.isStopped)
         {
-            // Set the destination of the NavMeshAgent to the player's position
-            agent.SetDestination(player.position);
-        }
-        else
-        {
-            // Stop the enemy if the player is too far
-            agent.isStopped = true;
+            anim.SetFloat("Speed", 0f, 0.3f, Time.deltaTime);
         }
     }
+    private void AttackPlayerBody(CharacterStats statsToDamage)
+    {
+        anim.SetTrigger("Attack");
+        stats.DealDamage(statsToDamage);
+    }
+
+
+
+    private void RotateToPlayerBody()
+    {
+     transform.LookAt(PlayerBody.position);
+        Vector3 direction = PlayerBody.position - transform.position;
+        Quaternion quaternion = Quaternion.LookRotation(direction,Vector3.up);
+        transform.rotation = quaternion;
+    }
+    
+    
+    
+    private void GetReferences()
+    { 
+      agent = GetComponent<NavMeshAgent>();
+        anim = GetComponentInChildren<Animator>();
+        stats = GetComponent<EnemyStats>();
+    }
+
 }
 
 

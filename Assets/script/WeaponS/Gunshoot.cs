@@ -20,6 +20,7 @@ public class Gunshoot : MonoBehaviour
     public Ray ray;
     private Animator isreloading;
     bool isReloading;
+    public int TakeDamage;
     private void Start()
     {
         isreloading = GetComponent<Animator>();
@@ -104,6 +105,13 @@ public class Gunshoot : MonoBehaviour
 
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, range))
             {
+                if (hit.transform.tag == "Enemy")
+                { 
+                  CharacterStats EnemyStats=hit.transform.GetComponent<CharacterStats>();
+                    EnemyStats.TakeDamage();
+                }
+                
+                
                 TigerHealth tigerHealth = hit.collider.GetComponent<TigerHealth>();
                 if (tigerHealth != null)
                 {
