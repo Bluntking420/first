@@ -6,22 +6,24 @@ using TMPro;
 
 public class HealthBar : MonoBehaviour
 {
-  private int basevalue;
-        private int  maxvaluse;
-        [SerializeField] private Image fill;
-    [SerializeField] private Text Amount;
-    public void SetValues(int _basevalue,int _maxvalue)
-    { 
-     basevalue = _basevalue;
-        maxvaluse = _maxvalue;
-        Amount.text=basevalue.ToString();
-        CalcutaleFillAmount();
-    }
-    private void CalcutaleFillAmount()
+    private float currHealth, maxHealth;
+    [SerializeField] private Image fill;
+    [SerializeField] private TMP_Text amount;
+
+    public void SetValues(float maxHealth)
     {
-        float fillAmount = (float)basevalue /(float) maxvaluse;
-        fill.fillAmount = fillAmount;
+        this.maxHealth = maxHealth;
+
+        currHealth = maxHealth;
+
+        UpdateHealth(currHealth);
     }
 
+    public void UpdateHealth(float _health)
+    {
+        var health = _health / maxHealth;
 
+        fill.fillAmount = health;
+        amount.text = _health.ToString();
+    }
 }
