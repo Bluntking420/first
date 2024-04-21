@@ -6,7 +6,7 @@ using TMPro;
 
 public class Gunshoot : MonoBehaviour
 {
-    public float ammo, totalammo, range, nextshoot, shootTime, Magsammo, Num, ReloadTime, MaxTime;
+    public float ammo, totalammo, range, nextshoot, shootTime, Magsammo, Num, ReloadTime, MaxTime,attackDamage;
     public bool shoot, Reload;
     RaycastHit hit;
     public TextMeshProUGUI AmmoText, totalAmmoText;
@@ -16,10 +16,11 @@ public class Gunshoot : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip ShootingSound;
     public AudioClip ReloadSound;
-    public float Damage = 10;
+  
     public Ray ray;
     private Animator isreloading;
     bool isReloading;
+    public int Damage;
     private void Start()
     {
         isreloading = GetComponent<Animator>();
@@ -105,15 +106,13 @@ public class Gunshoot : MonoBehaviour
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, range))
             {
                 if (hit.transform.tag == "Enemy")
-                {
-                    Debug.Log("SHOOT");
-
+                { 
+                  CharacterStats EnemyStats=hit.transform.GetComponent<CharacterStats>();
+                    EnemyStats.TakeDamage(Damage);
                 }
-                var HitBox = hit.collider.GetComponent<Hitbox>();
-                if (HitBox)
-                {
-                    HitBox.OnRaycastHit(this, ray.direction);
-                }
+                
+                
+               
             }
         }
     }
