@@ -4,23 +4,16 @@ using UnityEngine;
 
 public class PlayerStats : CharacterStats
 {
-    private PlayerHUD hud;
-
+    [SerializeField] HealthBar healthBar;
     private void Start()
     {
-        hud = GetComponent<PlayerHUD>();
-        InitVariables();
-        GetReferences();    
+        InitVariables(100); 
     }
-    private void GetReferences()
-    { 
-      hud= GetComponent<PlayerHUD>();
-    }
+   
     public override void CheckHealth()
     {
         base.CheckHealth();
-        hud.UpdateHealth(health,maxHealth);
+        healthBar.UpdateHealth(health);
     }
-
 }
 

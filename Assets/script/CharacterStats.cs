@@ -8,15 +8,6 @@ public class CharacterStats : MonoBehaviour
     [SerializeField] protected int maxHealth;
     [SerializeField] protected bool isDead;
 
-
-
-    private void Start()
-    {
-        InitVariables();
-    }
-
-
-
     public virtual void CheckHealth()
     {
         if (health <= 0)
@@ -31,14 +22,14 @@ public class CharacterStats : MonoBehaviour
             health = maxHealth;
         }
 
-     }
+    }
     public virtual void Die()
     {
         isDead = true;
     }
     public void SetHealthTo(int healthToSetoTo)
-    { 
-      health=healthToSetoTo;
+    {
+        health = healthToSetoTo;
         CheckHealth();
     }
     public void TakeDamage(int damage)
@@ -54,15 +45,11 @@ public class CharacterStats : MonoBehaviour
         SetHealthTo(healthAfterHeal);
     }
 
-    public virtual void InitVariables()
+    public virtual void InitVariables(int maxHealth)
     {
-        maxHealth = 100;
+        this.maxHealth = maxHealth;
         SetHealthTo(maxHealth);
         isDead = false;
-     
     }
-
-
-
 }
-     
+

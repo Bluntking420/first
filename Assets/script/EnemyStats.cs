@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class EnemyStats : CharacterStats
 {
-    [SerializeField]public int Damage;
-    [SerializeField]public float AttackSpeed;
+    [SerializeField] public int Damage;
+    [SerializeField] public float AttackSpeed;
     [SerializeField] private bool canAttack;
 
-  
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        InitVariables();
+        InitVariables(40);
+        Damage = 10;
+        AttackSpeed = 2;
+        canAttack = true;
+    }
+    public void TakeEnemyDamage(int damage)
+    {
+        health -= damage;
+        SetHealthTo(health);
     }
     public void DealDamage(CharacterStats statsToDamage)
     {
@@ -25,15 +33,6 @@ public class EnemyStats : CharacterStats
         Destroy(gameObject);
         base.Die();
     }
-    public override void InitVariables()
-    {
-        maxHealth = 40;
-        SetHealthTo(maxHealth);
-        isDead = false;
-        Damage = 10;
-        AttackSpeed = 2;
-        canAttack = true;
-    }
     // Update is called once per frame
-  
+
 }

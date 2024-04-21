@@ -6,7 +6,7 @@ using TMPro;
 
 public class Gunshoot : MonoBehaviour
 {
-    public float ammo, totalammo, range, nextshoot, shootTime, Magsammo, Num, ReloadTime, MaxTime,attackDamage;
+    public float ammo, totalammo, range, nextshoot, shootTime, Magsammo, Num, ReloadTime, MaxTime, attackDamage;
     public bool shoot, Reload;
     RaycastHit hit;
     public TextMeshProUGUI AmmoText, totalAmmoText;
@@ -16,11 +16,12 @@ public class Gunshoot : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip ShootingSound;
     public AudioClip ReloadSound;
-  
+
     public Ray ray;
     private Animator isreloading;
     bool isReloading;
     public int Damage;
+    [SerializeField] Transform shootPoint;
     private void Start()
     {
         isreloading = GetComponent<Animator>();
@@ -43,7 +44,7 @@ public class Gunshoot : MonoBehaviour
         }
 
 
-        if ((Input.GetKeyDown(KeyCode.R) || ammo == 0) && !isReloading)
+        if ((Input.GetKeyDown(KeyCode.R) || ammo == 0) && totalammo != 0 && !isReloading)
         {
             // Reload = true;
             StartCoroutine(ReloadGun());
@@ -103,16 +104,15 @@ public class Gunshoot : MonoBehaviour
             recoil.recoil();
             audioSource.PlayOneShot(ShootingSound);
 
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, range))
+            if (Physics.Raycast(shootPoint.position, shootPoint.up, out RaycastHit hit, range))
             {
-                if (hit.transform.tag == "Enemy")
-                { 
-                  CharacterStats EnemyStats=hit.transform.GetComponent<CharacterStats>();
-                    EnemyStats.TakeDamage(Damage);
+                print(hit.transform.name);
+                if (hit.transform.CompareTag("Enemy"))
+                {
+                    print("Enemy Hit");
+                    EnemyStats EnemyStats = hit.transform.GetComponent<EnemyStats>();
+                    EnemyStats.TakeEnemyDamage(Damage);
                 }
-                
-                
-               
             }
         }
     }
